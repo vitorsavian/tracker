@@ -1,0 +1,8 @@
+-- Your SQL goes here
+
+CREATE TABLE IF NOT EXISTS novel (
+  id UUID PRIMARY KEY NOT NULL,
+  name VARCHAR(1000) NOT NULL,
+  chapter INT NOT NULL,
+  finished BOOLEAN DEFAULT FALSE NOT NULL
+);
