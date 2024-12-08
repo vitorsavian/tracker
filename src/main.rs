@@ -1,32 +1,48 @@
 use actix_web::{delete, get, post, put, web, App, HttpServer, Responder};
 
-#[get("/api/novel/{id}")]
-async fn get_novels(id: web::Path<String>) -> impl Responder {
-    println!("{id}");
-    format!("NATHAN VIADO")
-}
-
-#[post("/api/novel")]
+#[post("/")]
 async fn create_novel() -> impl Responder {
-    format!("NATHAN VIADO")
+    format!("Novel created")
 }
 
-#[put("/api/novel/{id}")]
+#[get("/{id}")]
+async fn get_novel_by_id(id: web::Path<String>) -> impl Responder {
+    println!("{id}");
+    format!("got novel")
+}
+
+#[get("/")]
+async fn get_novels() -> impl Responder {
+    format!("got novel")
+}
+
+#[put("/{id}")]
 async fn update_novel(id: web::Path<String>) -> impl Responder {
     println!("{id}");
-    format!("NATHAN VIADO")
+    format!("Novel updated")
 }
 
-#[delete("/api/novel/{id}")]
+#[delete("/{id}")]
 async fn delete_novels(id: web::Path<String>) -> impl Responder {
     println!("{id}");
     format!("Deleted Novel")
 }
 
-#[actix_web::main] // or #[tokio::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(create_novel))
-        .bind(("127.0.0.1", 8080))?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new().service(
+            web::scope("/api").service(
+                web::scope("/novel")
+                    .service(create_novel)
+                    .service(get_novels)
+                    .service(get_novel_by_id)
+                    .service(update_novel)
+                    .service(delete_novels),
+            ),
+        )
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
 }
