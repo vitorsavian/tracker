@@ -7,5 +7,7 @@ diesel::table! {
         name -> Varchar,
         chapter -> Int4,
         finished -> Bool,
+        created_at -> Nullable<Timestamptz>,
+        updated_at -> Nullable<Timestamptz>,
     }
 }
