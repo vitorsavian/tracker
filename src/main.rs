@@ -1,3 +1,4 @@
+mod adapter;
 mod cmd;
 mod controller;
 mod domain;

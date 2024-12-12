@@ -1,5 +1,7 @@
 use clap::{Parser, Subcommand};
 
+use crate::controller::{novel, server::App};
+
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Cli {
@@ -74,16 +76,19 @@ pub fn run() {
             chapter,
             database,
         } => {
-            println!("{:?}", name);
+            let control = novel::Controller {
+                conn: novel::Controller::database_connection(database),
+            };
             println!("{:?}", finished);
             println!("{:?}", chapter);
-            println!("{:?}", database);
         }
+
         Commands::Get { id, all, database } => {
             println!("{:?}", id);
             println!("{:?}", all);
             println!("{:?}", database);
         }
+
         Commands::Remove {
             name,
             finished,
@@ -95,6 +100,7 @@ pub fn run() {
             println!("{:?}", chapter);
             println!("{:?}", database);
         }
+
         Commands::Update {
             name,
             finished,

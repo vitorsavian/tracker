@@ -1,35 +1,21 @@
-use actix_web::{delete, get, post, put, web, Responder};
+use core::panic;
 
-struct Controller {}
+use diesel::{Connection, PgConnection};
 
-impl Controller {
+use crate::controller::server::App;
+
+pub struct Controller {
+    pub conn: PgConnection,
+}
+
+impl App for Controller {
+    fn database_connection(s: String) -> PgConnection {
+        let conn =
+            PgConnection::establish(&s).unwrap_or_else(|_| panic!("Error connecting to {}", s));
+
+        conn
+    }
+
+    fn create_novel() {}
     // add code here
-}
-
-#[post("/")]
-async fn create_novel() -> impl Responder {
-    format!("Novel created")
-}
-
-#[get("/{id}")]
-async fn get_novel_by_id(id: web::Path<String>) -> impl Responder {
-    println!("{id}");
-    format!("got novel")
-}
-
-#[get("/")]
-async fn get_novels() -> impl Responder {
-    format!("got novel")
-}
-
-#[put("/{id}")]
-async fn update_novel(id: web::Path<String>) -> impl Responder {
-    println!("{id}");
-    format!("Novel updated")
-}
-
-#[delete("/{id}")]
-async fn delete_novels(id: web::Path<String>) -> impl Responder {
-    println!("{id}");
-    format!("Deleted Novel")
 }
