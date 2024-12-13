@@ -79,6 +79,8 @@ pub fn run() {
             let control = novel::Controller {
                 conn: novel::Controller::database_connection(database),
             };
+
+            control.conn.begin_test_transaction()
             println!("{:?}", finished);
             println!("{:?}", chapter);
         }

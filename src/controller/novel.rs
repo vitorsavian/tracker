@@ -16,6 +16,9 @@ impl App for Controller {
         conn
     }
 
-    fn create_novel() {}
+    fn create_novel(&self) {}
+    fn update_novel(&self) {}
+    fn delete_novel(&self) {}
+    fn get_novel(&self) {}
     // add code here
 }
