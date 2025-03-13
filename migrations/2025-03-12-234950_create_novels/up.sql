@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS novels (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR NOT NULL,
+  chapter INT NOT NULL
+)

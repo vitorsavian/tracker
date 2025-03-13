@@ -1,6 +1,8 @@
 mod controller;
 
 use clap::Parser;
+use diesel::PgConnection;
+use dotenvy::dotenv;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -16,6 +18,12 @@ struct Args {
     // String database
     #[arg(long)]
     database: String,
+}
+
+pub fn establish_connection() -> PgConnection {
+    dotenv().ok();
+
+    let database_url = env::var("DATABASE_URL");
 }
 
 fn main() {
