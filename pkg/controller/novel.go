@@ -1,4 +1,4 @@
-package novel
+package controller
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ var novelLock = &sync.Mutex{}
 
 var NovelControllerInstance *NovelController
 
-func getNovelControllerInstance() *NovelController {
+func GetNovelControllerInstance() *NovelController {
 	if NovelControllerInstance == nil {
 		novelLock.Lock()
 		defer novelLock.Unlock()
