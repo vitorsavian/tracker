@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// novelCmd represents the novel command
 var novelCmd = &cobra.Command{
 	Use:   "novel",
 	Short: "A command to track my books",
@@ -59,4 +58,14 @@ func init() {
 	novelCreateCmd.Flags().String("name", "", "name of the novel")
 	novelCreateCmd.Flags().Int("page", 0, "page that I'm currently in")
 	novelCreateCmd.Flags().Bool("finished", true, "flag for defining if the novel/book is still launching")
+
+	novelGetCmd.Flags().String("name", "", "get novel by name")
+	novelGetCmd.Flags().String("token", "", "get novel by token")
+
+	novelUpdateCmd.Flags().String("name", "", "get novel by name")
+	novelUpdateCmd.Flags().String("token", "", "get novel by name")
+	novelUpdateCmd.Flags().Int("page", 0, "page that I'm currently in")
+	novelUpdateCmd.Flags().Bool("finished", true, "flag for defining if the novel/book is still launching")
+
+	novelDeleteCmd.Flags().String("token", "", "delete a novel by the token")
 }

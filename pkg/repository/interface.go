@@ -1,4 +1,4 @@
-package database
+package repository
 
 type INovel interface {
 	CreateNovel() error
@@ -6,8 +6,4 @@ type INovel interface {
 	UpdateNovel() error
 	GetNovel() error
 	GetAllNovel() error
-}
-
-type IHealth interface {
-	CreateHealth() error
 }

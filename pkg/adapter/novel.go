@@ -7,6 +7,10 @@ type CreateNovelAdapter struct {
 	Finished bool
 }
 
-func NovelCreateAdapter() {
+func NovelCreateCLIStdInAdapter() {
+
+}
+
+func NovelCreateCLIStdOutAdapter() {
 
 }
