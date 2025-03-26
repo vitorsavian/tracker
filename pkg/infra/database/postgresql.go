@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/sirupsen/logrus"
 	"github.com/vitorsavian/tracker/pkg/domain"
+	"github.com/vitorsavian/tracker/pkg/utils"
 )
 
 type PSQL struct {
@@ -27,7 +28,7 @@ func (p *PSQL) CreateConnection() error {
 }
 
 var createNovel = `
-INSERT INTO novel(id, name, page, finished) VALUES($1, $2, $3, $4)
+INSERT INTO novel(id, name, page, finished, created_at) VALUES($1, $2, $3, $4, $5)
 `
 
 func (p *PSQL) CreateNovel(novel *domain.Novel) error {
@@ -39,7 +40,7 @@ func (p *PSQL) CreateNovel(novel *domain.Novel) error {
 	}
 
 	if _, err = tx.Exec(ctx, createNovel, novel.Id,
-		novel.Name, novel.Page, novel.Finished); err != nil {
+		novel.Name, novel.Page, novel.Finished, utils.UTCTime()); err != nil {
 		logrus.Errorf("Unable to exec query to create novel: %v\n", err)
 
 		if err = tx.Rollback(ctx); err != nil {
@@ -53,3 +54,15 @@ func (p *PSQL) CreateNovel(novel *domain.Novel) error {
 	tx.Commit(ctx)
 	return nil
 }
+
+var updateNovel = `
+UPDATE novel SET name = $2, page = $3, finished = $4, updated_at = $5 WHERE novel.id = $1;
+`
+
+var deleteNovel = `
+DELETE novel WHERE novel.id = $1;
+`
+
+var getNovel = `
+SELECT FROM novel WHERE id = $1;
+`

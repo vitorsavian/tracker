@@ -49,7 +49,17 @@ func (c *NovelController) CliCreate(adapter *adapter.CreateNovelAdapter) error {
 		return err
 	}
 
-	fmt.Println(novel)
+	err = c.Repository.CreateNovel(novel)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("--------------------------------------")
+	fmt.Printf("Novel id: %s\n", novel.Id)
+	fmt.Printf("Novel name: %s\n", novel.Name)
+	fmt.Printf("Novel page: %d\n", novel.Page)
+	fmt.Printf("Novel finished: %b\n", novel.Finished)
+	fmt.Println("--------------------------------------")
 
 	return nil
 }
