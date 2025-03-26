@@ -6,6 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/vitorsavian/tracker/pkg/adapter"
+	"github.com/vitorsavian/tracker/pkg/domain"
 	"github.com/vitorsavian/tracker/pkg/repository"
 )
 
@@ -43,6 +44,12 @@ func GetNovelControllerInstance() *NovelController {
 }
 
 func (c *NovelController) CliCreate(adapter *adapter.CreateNovelAdapter) error {
+	novel, err := domain.CreateNovel(adapter)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(novel)
 
 	return nil
 }

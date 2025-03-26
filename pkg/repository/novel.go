@@ -1,6 +1,9 @@
 package repository
 
-import "github.com/vitorsavian/tracker/pkg/infra/database"
+import (
+	"github.com/vitorsavian/tracker/pkg/domain"
+	"github.com/vitorsavian/tracker/pkg/infra/database"
+)
 
 type NovelRepositoryDB struct {
 	Driver database.IConnection
@@ -18,7 +21,12 @@ func CreateNovelRepo() (*NovelRepositoryDB, error) {
 	return novelRepo, nil
 }
 
-func (n *NovelRepositoryDB) CreateNovel() error {
+func (n *NovelRepositoryDB) CreateNovel(novel *domain.Novel) error {
+	err := n.Driver.CreateNovel(novel)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

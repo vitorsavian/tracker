@@ -1,7 +1,9 @@
 package repository
 
+import "github.com/vitorsavian/tracker/pkg/domain"
+
 type INovel interface {
-	CreateNovel() error
+	CreateNovel(novel *domain.Novel) error
 	DeleteNovel() error
 	UpdateNovel() error
 	GetNovel() error
