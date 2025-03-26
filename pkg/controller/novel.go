@@ -44,7 +44,7 @@ func GetNovelControllerInstance() *NovelController {
 }
 
 func (c *NovelController) CliCreate(adapter *adapter.CreateNovelAdapter) error {
-	novel, err := domain.CreateNovel(adapter)
+	novel, err := domain.NewNovel(adapter)
 	if err != nil {
 		return err
 	}
