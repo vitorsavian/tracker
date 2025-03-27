@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/vitorsavian/tracker/pkg/adapter"
 	"github.com/vitorsavian/tracker/pkg/controller"
-	"github.com/vitorsavian/tracker/pkg/infra/env"
 )
 
 var novelCmd = &cobra.Command{
@@ -22,8 +21,6 @@ var novelCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "create a new book log",
 	Run: func(cmd *cobra.Command, args []string) {
-		env.SetEnv()
-
 		name, err := cmd.Flags().GetString("name")
 		if err != nil {
 			logrus.Errorf("Unable to get name from cli: %v\n", err)
