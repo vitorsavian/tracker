@@ -4,9 +4,6 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vitorsavian/tracker/pkg/adapter"
@@ -50,9 +47,6 @@ var novelCreateCmd = &cobra.Command{
 			Page:     page,
 			Finished: finished,
 		}
-
-		fmt.Println(novel.Finished)
-		os.Exit(0)
 
 		novelController := controller.GetNovelControllerInstance()
 

@@ -58,7 +58,7 @@ func (c *NovelController) CliCreate(adapter *adapter.CreateNovelAdapter) error {
 	fmt.Printf("Novel id: %s\n", novel.Id)
 	fmt.Printf("Novel name: %s\n", novel.Name)
 	fmt.Printf("Novel page: %d\n", novel.Page)
-	fmt.Printf("Novel finished: %b\n", novel.Finished)
+	fmt.Printf("Novel finished: %t\n", novel.Finished)
 	fmt.Println("--------------------------------------")
 
 	return nil
