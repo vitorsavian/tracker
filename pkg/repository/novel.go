@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/vitorsavian/tracker/pkg/adapter"
 	"github.com/vitorsavian/tracker/pkg/domain"
 	"github.com/vitorsavian/tracker/pkg/infra/database"
 )
@@ -22,7 +23,14 @@ func CreateNovelRepo() (*NovelRepositoryDB, error) {
 }
 
 func (n *NovelRepositoryDB) CreateNovel(novel *domain.Novel) error {
-	err := n.Driver.CreateNovel(novel)
+	request := adapter.CreateNovelDatabaseRequestAdapter{
+		Id:       novel.Id,
+		Name:     novel.Name,
+		Finished: novel.Finished,
+		Page:     novel.Page,
+	}
+
+	err := n.Driver.CreateNovel(&request)
 	if err != nil {
 		return err
 	}
@@ -39,14 +47,44 @@ func (n *NovelRepositoryDB) DeleteNovel(id string) error {
 	return nil
 }
 
-func (n *NovelRepositoryDB) UpdateNovel() error {
+func (n *NovelRepositoryDB) UpdateNovel(novel *domain.Novel) error {
+	request := adapter.UpdateNovelDatabaseRequestAdapter{
+		Id:       novel.Id,
+		Name:     novel.Name,
+		Finished: novel.Finished,
+		Page:     novel.Page,
+	}
+
+	err := n.Driver.UpdateNovel(&request)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (n *NovelRepositoryDB) GetNovel() error {
-	return nil
+func (n *NovelRepositoryDB) GetNovel(id string) (*domain.Novel, error) {
+	response, err := n.Driver.GetNovel(id)
+	if err != nil {
+		return nil, err
+	}
+
+	novel := &domain.Novel{
+		Id:       response.Id,
+		Name:     response.Name,
+		Finished: response.Finished,
+		Page:     response.Page,
+	}
+
+	return novel, nil
 }
 
 func (n *NovelRepositoryDB) GetAllNovel() error {
+	// err := n.Driver.DeleteNovel(id)
+	// if err != nil {
+	// 	return err
+	// }
+	//
+	// return nil
 	return nil
 }

@@ -5,7 +5,7 @@ import "github.com/vitorsavian/tracker/pkg/domain"
 type INovel interface {
 	CreateNovel(novel *domain.Novel) error
 	DeleteNovel(id string) error
-	UpdateNovel() error
-	GetNovel() error
+	UpdateNovel(novel *domain.Novel) error
+	GetNovel(id string) (*domain.Novel, error)
 	GetAllNovel() error
 }

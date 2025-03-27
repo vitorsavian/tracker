@@ -64,14 +64,53 @@ func (c *NovelController) CliCreate(adapter *adapter.CreateNovelAdapter) error {
 	return nil
 }
 
-func (c *NovelController) CliDelete(adapter *adapter.DeleteNovelAdapter) error {
-	err := c.Repository.DeleteNovel(adapter.Id)
+func (c *NovelController) CliDelete(id string) error {
+	err := c.Repository.DeleteNovel(id)
 	if err != nil {
 		return err
 	}
 
 	fmt.Println("--------------------------------------")
-	fmt.Printf("Novel deleted: %s\n", adapter.Id)
+	fmt.Printf("Novel deleted: %s\n", id)
+	fmt.Println("--------------------------------------")
+
+	return nil
+}
+
+func (c *NovelController) CliUpdate(adapter *adapter.UpdateNovelAdapter) error {
+	novel, err := domain.UpdateNovel(adapter)
+	if err != nil {
+		return err
+	}
+
+	err = c.Repository.UpdateNovel(novel)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("--------------------------------------")
+	fmt.Printf("Novel updated: %s\n", adapter.Id)
+	fmt.Println("--------------------------------------")
+	fmt.Printf("With this values:\n")
+	fmt.Printf("Novel name: %s\n", novel.Name)
+	fmt.Printf("Novel page: %d\n", novel.Page)
+	fmt.Printf("Novel finished: %t\n", novel.Finished)
+	fmt.Println("--------------------------------------")
+
+	return nil
+}
+
+func (c *NovelController) CliGet(id string) error {
+	novel, err := c.Repository.GetNovel(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("--------------------------------------")
+	fmt.Printf("Novel id: %s\n", novel.Id)
+	fmt.Printf("Novel name: %s\n", novel.Name)
+	fmt.Printf("Novel page: %d\n", novel.Page)
+	fmt.Printf("Novel finished: %t\n", novel.Finished)
 	fmt.Println("--------------------------------------")
 
 	return nil

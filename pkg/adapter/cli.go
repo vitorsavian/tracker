@@ -12,11 +12,3 @@ type UpdateNovelAdapter struct {
 	Page     int    `json:"page"`
 	Finished bool   `json:"finished"`
 }
-
-type DeleteNovelAdapter struct {
-	Id string
-}
-
-type GetNovelAdapter struct {
-	Id string
-}
