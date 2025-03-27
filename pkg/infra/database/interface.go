@@ -6,6 +6,7 @@ import (
 
 type IConnection interface {
 	CreateConnection() error
+
 	CreateNovel(novel *adapter.CreateNovelDatabaseRequestAdapter) error
 	DeleteNovel(id string) error
 	UpdateNovel(novel *adapter.UpdateNovelDatabaseRequestAdapter) error

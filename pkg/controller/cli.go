@@ -128,8 +128,8 @@ func (c *NovelController) CliGetAll() error {
 		fmt.Printf("Novel name: %s\n", v.Name)
 		fmt.Printf("Novel page: %d\n", v.Page)
 		fmt.Printf("Novel finished: %t\n", v.Finished)
-		fmt.Println("--------------------------------------")
 	}
+	fmt.Println("--------------------------------------")
 
 	return nil
 }

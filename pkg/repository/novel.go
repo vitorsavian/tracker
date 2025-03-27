@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/sirupsen/logrus"
 	"github.com/vitorsavian/tracker/pkg/adapter"
 	"github.com/vitorsavian/tracker/pkg/domain"
@@ -88,11 +86,9 @@ func (n *NovelRepositoryDB) GetAllNovel() ([]domain.Novel, error) {
 		logrus.Errorf("unable to get novels: %v\n", err)
 		return nil, err
 	}
-	fmt.Println(response)
 
 	var novels []domain.Novel
 	for _, v := range response {
-		fmt.Println(v)
 		novel := domain.Novel{
 			Id:       v.Id,
 			Name:     v.Name,
