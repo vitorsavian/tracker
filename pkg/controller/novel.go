@@ -63,3 +63,16 @@ func (c *NovelController) CliCreate(adapter *adapter.CreateNovelAdapter) error {
 
 	return nil
 }
+
+func (c *NovelController) CliDelete(adapter *adapter.DeleteNovelAdapter) error {
+	err := c.Repository.DeleteNovel(adapter.Id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("--------------------------------------")
+	fmt.Printf("Novel deleted: %s\n", adapter.Id)
+	fmt.Println("--------------------------------------")
+
+	return nil
+}

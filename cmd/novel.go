@@ -55,6 +55,18 @@ var novelDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "create a new book log",
 	Run: func(cmd *cobra.Command, args []string) {
+		id, err := cmd.Flags().GetString("id")
+		if err != nil {
+			logrus.Errorf("Unable to get id from cli: %v\n", err)
+			return
+		}
+
+		novel := adapter.DeleteNovelAdapter{
+			Id: id,
+		}
+
+		novelController := controller.GetNovelControllerInstance()
+		novelController.CliDelete(&novel)
 	},
 }
 
@@ -62,6 +74,33 @@ var novelUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "create a new book log",
 	Run: func(cmd *cobra.Command, args []string) {
+		// name, err := cmd.Flags().GetString("name")
+		// if err != nil {
+		// 	logrus.Errorf("Unable to get name from cli: %v\n", err)
+		// 	return
+		// }
+		//
+		// page, err := cmd.Flags().GetInt("page")
+		// if err != nil {
+		// 	logrus.Errorf("Unable to get name from cli: %v\n", err)
+		// 	return
+		// }
+		//
+		// finished, err := cmd.Flags().GetBool("finished")
+		// if err != nil {
+		// 	logrus.Errorf("Unable to get name from cli: %v\n", err)
+		// 	return
+		// }
+		//
+		// novel := adapter.CreateNovelAdapter{
+		// 	Name:     name,
+		// 	Page:     page,
+		// 	Finished: finished,
+		// }
+		//
+		// novelController := controller.GetNovelControllerInstance()
+		//
+		// novelController.CliUpdate(&novel)
 	},
 }
 
@@ -85,12 +124,12 @@ func init() {
 	novelCreateCmd.Flags().Bool("finished", false, "flag for defining if the novel/book is still launching")
 
 	novelGetCmd.Flags().String("name", "", "get novel by name")
-	novelGetCmd.Flags().String("token", "", "get novel by token")
+	novelGetCmd.Flags().String("id", "", "get novel by token")
 
 	novelUpdateCmd.Flags().String("name", "", "get novel by name")
-	novelUpdateCmd.Flags().String("token", "", "get novel by name")
+	novelUpdateCmd.Flags().String("id", "", "get novel by name")
 	novelUpdateCmd.Flags().Int("page", 0, "page that I'm currently in")
 	novelUpdateCmd.Flags().Bool("finished", false, "flag for defining if the novel/book is still launching")
 
-	novelDeleteCmd.Flags().String("token", "", "delete a novel by the token")
+	novelDeleteCmd.Flags().String("id", "", "delete a novel by the token")
 }

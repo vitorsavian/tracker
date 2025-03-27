@@ -59,9 +59,57 @@ var updateNovel = `
 UPDATE novel SET name = $2, page = $3, finished = $4, updated_at = $5 WHERE novel.id = $1;
 `
 
+func (p *PSQL) UpdateNovel(novel *domain.Novel) error {
+	ctx := context.Background()
+	tx, err := p.conn.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		logrus.Errorf("Unable to begin transction: %v\n", err)
+		return err
+	}
+
+	if _, err = tx.Exec(ctx, updateNovel,
+		novel.Id, novel.Name,
+		novel.Page, novel.Finished, utils.UTCTime()); err != nil {
+		logrus.Errorf("Unable to exec query to delete novel: %v\n", err)
+
+		if err = tx.Rollback(ctx); err != nil {
+			logrus.Errorf("Unable to rollback delete novel transaction: %v\n", err)
+			return err
+		}
+
+		return err
+	}
+
+	tx.Commit(ctx)
+	return nil
+}
+
 var deleteNovel = `
-DELETE novel WHERE novel.id = $1;
+DELETE FROM novel WHERE novel.id = $1;
 `
+
+func (p *PSQL) DeleteNovel(id string) error {
+	ctx := context.Background()
+	tx, err := p.conn.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		logrus.Errorf("Unable to begin transction: %v\n", err)
+		return err
+	}
+
+	if _, err = tx.Exec(ctx, deleteNovel, id); err != nil {
+		logrus.Errorf("Unable to exec query to delete novel: %v\n", err)
+
+		if err = tx.Rollback(ctx); err != nil {
+			logrus.Errorf("Unable to rollback delete novel transaction: %v\n", err)
+			return err
+		}
+
+		return err
+	}
+
+	tx.Commit(ctx)
+	return nil
+}
 
 var getNovel = `
 SELECT FROM novel WHERE id = $1;

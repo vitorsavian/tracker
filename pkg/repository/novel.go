@@ -30,7 +30,12 @@ func (n *NovelRepositoryDB) CreateNovel(novel *domain.Novel) error {
 	return nil
 }
 
-func (n *NovelRepositoryDB) DeleteNovel() error {
+func (n *NovelRepositoryDB) DeleteNovel(id string) error {
+	err := n.Driver.DeleteNovel(id)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
