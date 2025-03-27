@@ -1,6 +1,3 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -45,9 +42,9 @@ var novelCreateCmd = &cobra.Command{
 			Finished: finished,
 		}
 
-		novelController := controller.GetNovelControllerInstance()
+		cliController := controller.GetCliControllerInstance()
 
-		novelController.CliCreate(&novel)
+		cliController.CreateNovel(&novel)
 	},
 }
 
@@ -61,8 +58,8 @@ var novelDeleteCmd = &cobra.Command{
 			return
 		}
 
-		novelController := controller.GetNovelControllerInstance()
-		novelController.CliDelete(id)
+		cliController := controller.GetCliControllerInstance()
+		cliController.DeleteNovel(id)
 	},
 }
 
@@ -100,8 +97,8 @@ var novelUpdateCmd = &cobra.Command{
 			Finished: finished,
 		}
 
-		novelController := controller.GetNovelControllerInstance()
-		novelController.CliUpdate(&novel)
+		cliController := controller.GetCliControllerInstance()
+		cliController.UpdateNovel(&novel)
 	},
 }
 
@@ -121,13 +118,13 @@ var novelGetCmd = &cobra.Command{
 			return
 		}
 
-		novelController := controller.GetNovelControllerInstance()
+		cliController := controller.GetCliControllerInstance()
 
 		if all {
-			novelController.CliGetAll()
+			cliController.GetAllNovel()
 			return
 		}
-		novelController.CliGet(id)
+		cliController.GetNovel(id)
 	},
 }
 

@@ -10,27 +10,27 @@ import (
 	"github.com/vitorsavian/tracker/pkg/repository"
 )
 
-type NovelController struct {
+type CliController struct {
 	Repository repository.INovel
 }
 
-var novelLock = &sync.Mutex{}
+var cliLock = &sync.Mutex{}
 
-var NovelControllerInstance *NovelController
+var CliControllerInstance *CliController
 
-func GetNovelControllerInstance() *NovelController {
-	if NovelControllerInstance == nil {
-		novelLock.Lock()
-		defer novelLock.Unlock()
+func GetCliControllerInstance() *CliController {
+	if CliControllerInstance == nil {
+		cliLock.Lock()
+		defer cliLock.Unlock()
 
-		if NovelControllerInstance == nil {
+		if CliControllerInstance == nil {
 			repo, err := repository.CreateNovelRepo()
 			if err != nil {
 				logrus.Errorf("Unable to create repository: %v\n", err)
 				return nil
 			}
 
-			NovelControllerInstance = &NovelController{
+			CliControllerInstance = &CliController{
 				Repository: repo,
 			}
 		} else {
@@ -40,10 +40,10 @@ func GetNovelControllerInstance() *NovelController {
 		fmt.Println("Novel controler instance already created")
 	}
 
-	return NovelControllerInstance
+	return CliControllerInstance
 }
 
-func (c *NovelController) CliCreate(adapter *adapter.CreateNovelAdapter) error {
+func (c *CliController) CreateNovel(adapter *adapter.CreateNovelAdapter) error {
 	novel, err := domain.NewNovel(adapter)
 	if err != nil {
 		return err
@@ -64,7 +64,7 @@ func (c *NovelController) CliCreate(adapter *adapter.CreateNovelAdapter) error {
 	return nil
 }
 
-func (c *NovelController) CliDelete(id string) error {
+func (c *CliController) DeleteNovel(id string) error {
 	err := c.Repository.DeleteNovel(id)
 	if err != nil {
 		return err
@@ -77,7 +77,7 @@ func (c *NovelController) CliDelete(id string) error {
 	return nil
 }
 
-func (c *NovelController) CliUpdate(adapter *adapter.UpdateNovelAdapter) error {
+func (c *CliController) UpdateNovel(adapter *adapter.UpdateNovelAdapter) error {
 	novel, err := domain.UpdateNovel(adapter)
 	if err != nil {
 		return err
@@ -100,7 +100,7 @@ func (c *NovelController) CliUpdate(adapter *adapter.UpdateNovelAdapter) error {
 	return nil
 }
 
-func (c *NovelController) CliGet(id string) error {
+func (c *CliController) GetNovel(id string) error {
 	novel, err := c.Repository.GetNovel(id)
 	if err != nil {
 		return err
@@ -116,7 +116,7 @@ func (c *NovelController) CliGet(id string) error {
 	return nil
 }
 
-func (c *NovelController) CliGetAll() error {
+func (c *CliController) GetAllNovel() error {
 	novels, err := c.Repository.GetAllNovel()
 	if err != nil {
 		return err
