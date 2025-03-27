@@ -115,7 +115,18 @@ var novelGetCmd = &cobra.Command{
 			return
 		}
 
+		all, err := cmd.Flags().GetBool("all")
+		if err != nil {
+			logrus.Errorf("Unable to get all from cli: %v\n", err)
+			return
+		}
+
 		novelController := controller.GetNovelControllerInstance()
+
+		if all {
+			novelController.CliGetAll()
+			return
+		}
 		novelController.CliGet(id)
 	},
 }
@@ -132,8 +143,8 @@ func init() {
 	novelCreateCmd.Flags().Int("page", 0, "page that I'm currently in")
 	novelCreateCmd.Flags().Bool("finished", false, "flag for defining if the novel/book is still launching")
 
-	novelGetCmd.Flags().String("name", "", "get novel by name")
-	novelGetCmd.Flags().String("id", "", "get novel by token")
+	novelGetCmd.Flags().String("id", "", "get novel by id")
+	novelGetCmd.Flags().Bool("all", false, "get every novel")
 
 	novelUpdateCmd.Flags().String("name", "", "get novel by name")
 	novelUpdateCmd.Flags().String("id", "", "get novel by name")

@@ -10,4 +10,5 @@ type IConnection interface {
 	DeleteNovel(id string) error
 	UpdateNovel(novel *adapter.UpdateNovelDatabaseRequestAdapter) error
 	GetNovel(id string) (*adapter.GetNovelDatabaseResponseAdapter, error)
+	GetAllNovel() ([]adapter.GetNovelDatabaseResponseAdapter, error)
 }

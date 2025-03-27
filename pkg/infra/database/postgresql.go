@@ -134,28 +134,35 @@ func (p *PSQL) GetNovel(id string) (*adapter.GetNovelDatabaseResponseAdapter, er
 }
 
 var getAllNovels = `
-SELECT novel.id, novel.name, novel.page, novel.finished, novel.created_at, novel_updated_at FROM novel
+SELECT novel.id, novel.name, novel.page, novel.finished, novel.created_at, novel.updated_at FROM novel
 `
 
-// func (p *PSQL) GetNovel(id string) error {
-// 	ctx := context.Background()
-// 	tx, err := p.conn.BeginTx(ctx, pgx.TxOptions{})
-// 	if err != nil {
-// 		logrus.Errorf("Unable to begin for delete novel transction: %v\n", err)
-// 		return err
-// 	}
-//
-// 	if _, err = tx.Exec(ctx, deleteNovel, id); err != nil {
-// 		logrus.Errorf("Unable to exec query to delete novel: %v\n", err)
-//
-// 		if err = tx.Rollback(ctx); err != nil {
-// 			logrus.Errorf("Unable to rollback delete novel transaction: %v\n", err)
-// 			return err
-// 		}
-//
-// 		return err
-// 	}
-//
-// 	tx.Commit(ctx)
-// 	return nil
-// }
+func (p *PSQL) GetAllNovel() ([]adapter.GetNovelDatabaseResponseAdapter, error) {
+	ctx := context.Background()
+
+	result, err := p.conn.Query(ctx, getAllNovels)
+	if err != nil {
+		logrus.Errorf("Unable to get all novels transction: %v\n", err)
+		return nil, err
+	}
+
+	defer result.Close()
+
+	var novels []adapter.GetNovelDatabaseResponseAdapter
+
+	for result.Next() {
+		var n adapter.GetNovelDatabaseResponseAdapter
+		err := result.Scan(&n.Id, &n.Name, &n.Page, &n.Finished, &n.CreatedAt, &n.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		novels = append(novels, n)
+	}
+
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+
+	return novels, nil
+}

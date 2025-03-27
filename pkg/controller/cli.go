@@ -115,3 +115,21 @@ func (c *NovelController) CliGet(id string) error {
 
 	return nil
 }
+
+func (c *NovelController) CliGetAll() error {
+	novels, err := c.Repository.GetAllNovel()
+	if err != nil {
+		return err
+	}
+
+	for _, v := range novels {
+		fmt.Println("--------------------------------------")
+		fmt.Printf("Novel id: %s\n", v.Id)
+		fmt.Printf("Novel name: %s\n", v.Name)
+		fmt.Printf("Novel page: %d\n", v.Page)
+		fmt.Printf("Novel finished: %t\n", v.Finished)
+		fmt.Println("--------------------------------------")
+	}
+
+	return nil
+}

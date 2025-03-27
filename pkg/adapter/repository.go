@@ -22,5 +22,5 @@ type GetNovelDatabaseResponseAdapter struct {
 	Page      int
 	Finished  bool
 	CreatedAt time.Time
-	UpdatedAt time.Time
+	UpdatedAt *time.Time
 }

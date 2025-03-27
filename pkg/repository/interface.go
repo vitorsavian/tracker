@@ -7,5 +7,5 @@ type INovel interface {
 	DeleteNovel(id string) error
 	UpdateNovel(novel *domain.Novel) error
 	GetNovel(id string) (*domain.Novel, error)
-	GetAllNovel() error
+	GetAllNovel() ([]domain.Novel, error)
 }

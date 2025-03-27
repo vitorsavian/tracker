@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"fmt"
+
+	"github.com/sirupsen/logrus"
 	"github.com/vitorsavian/tracker/pkg/adapter"
 	"github.com/vitorsavian/tracker/pkg/domain"
 	"github.com/vitorsavian/tracker/pkg/infra/database"
@@ -79,12 +82,26 @@ func (n *NovelRepositoryDB) GetNovel(id string) (*domain.Novel, error) {
 	return novel, nil
 }
 
-func (n *NovelRepositoryDB) GetAllNovel() error {
-	// err := n.Driver.DeleteNovel(id)
-	// if err != nil {
-	// 	return err
-	// }
-	//
-	// return nil
-	return nil
+func (n *NovelRepositoryDB) GetAllNovel() ([]domain.Novel, error) {
+	response, err := n.Driver.GetAllNovel()
+	if err != nil {
+		logrus.Errorf("unable to get novels: %v\n", err)
+		return nil, err
+	}
+	fmt.Println(response)
+
+	var novels []domain.Novel
+	for _, v := range response {
+		fmt.Println(v)
+		novel := domain.Novel{
+			Id:       v.Id,
+			Name:     v.Name,
+			Finished: v.Finished,
+			Page:     v.Page,
+		}
+
+		novels = append(novels, novel)
+	}
+
+	return novels, nil
 }
