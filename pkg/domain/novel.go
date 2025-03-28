@@ -47,3 +47,12 @@ func UpdateNovel(novel *adapter.UpdateNovelAdapter) (*Novel, error) {
 		Finished: novel.Finished,
 	}, nil
 }
+
+func GetAllPages(novel []adapter.GetNovelDatabaseResponseAdapter) int {
+	pages := 0
+	for _, v := range novel {
+		pages += v.Page
+	}
+
+	return pages
+}
