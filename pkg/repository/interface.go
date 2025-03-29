@@ -9,3 +9,10 @@ type INovel interface {
 	GetNovel(id string) (*domain.Novel, error)
 	GetAllNovel() ([]domain.Novel, error)
 }
+
+type IHealth interface {
+	CreateCaloriesLog() error
+	DeleteCaloriesLog() error
+	UpdateCaloriesLog() error
+	GetCaloriesLog() error
+}
