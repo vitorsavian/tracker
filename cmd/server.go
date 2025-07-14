@@ -6,6 +6,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/vitorsavian/tracker/pkg/controller/rest"
+	"net/http"
 )
 
 // serverCmd represents the server command
@@ -13,7 +14,9 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "API Rest",
 	Run: func(cmd *cobra.Command, args []string) {
-		_ = rest.GetControllerInstance()
+		controller := rest.GetControllerInstance()
+
+		http.HandleFunc()
 	},
 }
 
