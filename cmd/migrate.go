@@ -6,11 +6,13 @@ package cmd
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"github.com/vitorsavian/tracker/pkg/infra/env"
 	"os"
 	"path/filepath"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/cobra"
 )
 
@@ -34,6 +36,8 @@ var migrateUpCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("migrate up called")
 
+		env.SetEnv()
+
 		origin, err := os.Getwd()
 		if err != nil {
 			logrus.Fatalf("Error encountered while getting main directory: %v", err)
@@ -41,7 +45,7 @@ var migrateUpCmd = &cobra.Command{
 
 		m, err := migrate.New(
 			fmt.Sprintf("%s%s", "file://", filepath.Join(origin, "internal", "database", "migrations")),
-			"postgres://localhost:5432/database?sslmode=enable")
+			os.Getenv("DATABASE_URL"))
 
 		if err != nil {
 			logrus.Fatal(err)

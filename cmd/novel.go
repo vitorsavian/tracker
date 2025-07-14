@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vitorsavian/tracker/pkg/adapter"
-	"github.com/vitorsavian/tracker/pkg/controller"
+	"github.com/vitorsavian/tracker/pkg/controller/cli"
 )
 
 var novelCmd = &cobra.Command{
@@ -42,7 +42,7 @@ var novelCreateCmd = &cobra.Command{
 			Finished: finished,
 		}
 
-		cliController := controller.GetCliControllerInstance()
+		cliController := cli.GetCliControllerInstance()
 
 		cliController.CreateNovel(&novel)
 	},
@@ -58,7 +58,7 @@ var novelDeleteCmd = &cobra.Command{
 			return
 		}
 
-		cliController := controller.GetCliControllerInstance()
+		cliController := cli.GetCliControllerInstance()
 		cliController.DeleteNovel(id)
 	},
 }
@@ -97,7 +97,7 @@ var novelUpdateCmd = &cobra.Command{
 			Finished: finished,
 		}
 
-		cliController := controller.GetCliControllerInstance()
+		cliController := cli.GetCliControllerInstance()
 		cliController.UpdateNovel(&novel)
 	},
 }
@@ -118,7 +118,7 @@ var novelGetCmd = &cobra.Command{
 			return
 		}
 
-		cliController := controller.GetCliControllerInstance()
+		cliController := cli.GetCliControllerInstance()
 
 		if all {
 			cliController.GetAllNovel()

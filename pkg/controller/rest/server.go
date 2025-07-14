@@ -1,4 +1,4 @@
-package controller
+package rest
 
 import (
 	"fmt"
@@ -11,27 +11,27 @@ import (
 	"github.com/vitorsavian/tracker/pkg/repository"
 )
 
-type RestController struct {
+type Controller struct {
 	Repository repository.INovel
 }
 
 var restLock = &sync.Mutex{}
 
-var RestControllerInstance *RestController
+var ControllerInstance *Controller
 
-func GetRestControllerInstance() *RestController {
-	if RestControllerInstance == nil {
+func GetControllerInstance() *Controller {
+	if ControllerInstance == nil {
 		restLock.Lock()
 		defer restLock.Unlock()
 
-		if RestControllerInstance == nil {
+		if ControllerInstance == nil {
 			repo, err := repository.CreateNovelRepo()
 			if err != nil {
 				logrus.Errorf("Unable to create repository: %v\n", err)
 				return nil
 			}
 
-			RestControllerInstance = &RestController{
+			ControllerInstance = &Controller{
 				Repository: repo,
 			}
 		} else {
@@ -41,10 +41,10 @@ func GetRestControllerInstance() *RestController {
 		fmt.Println("Novel controler instance already created")
 	}
 
-	return RestControllerInstance
+	return ControllerInstance
 }
 
-func (c *RestController) CreateNovel(requestAdapter *adapter.CreateNovelAdapter) (*domain.Novel, int, error) {
+func (c *Controller) CreateNovel(requestAdapter *adapter.CreateNovelAdapter) (*domain.Novel, int, error) {
 	novel, err := domain.NewNovel(requestAdapter)
 	if err != nil {
 		return nil, http.StatusBadRequest, err
@@ -58,7 +58,7 @@ func (c *RestController) CreateNovel(requestAdapter *adapter.CreateNovelAdapter)
 	return novel, http.StatusCreated, nil
 }
 
-func (c *RestController) DeleteNovel(id string) (int, error) {
+func (c *Controller) DeleteNovel(id string) (int, error) {
 	err := c.Repository.DeleteNovel(id)
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -67,7 +67,7 @@ func (c *RestController) DeleteNovel(id string) (int, error) {
 	return http.StatusNoContent, nil
 }
 
-func (c *RestController) UpdateNovel(adapter *adapter.UpdateNovelAdapter) (*domain.Novel, int, error) {
+func (c *Controller) UpdateNovel(adapter *adapter.UpdateNovelAdapter) (*domain.Novel, int, error) {
 	novel, err := domain.UpdateNovel(adapter)
 	if err != nil {
 		return nil, http.StatusBadRequest, err
@@ -81,7 +81,7 @@ func (c *RestController) UpdateNovel(adapter *adapter.UpdateNovelAdapter) (*doma
 	return novel, http.StatusOK, nil
 }
 
-func (c *RestController) GetNovel(id string) (*domain.Novel, int, error) {
+func (c *Controller) GetNovel(id string) (*domain.Novel, int, error) {
 	novel, err := c.Repository.GetNovel(id)
 	if err != nil {
 		return nil, http.StatusBadRequest, err
@@ -90,7 +90,7 @@ func (c *RestController) GetNovel(id string) (*domain.Novel, int, error) {
 	return novel, http.StatusOK, nil
 }
 
-func (c *RestController) GetAllNovel() (*[]domain.Novel, int, error) {
+func (c *Controller) GetAllNovel() (*[]domain.Novel, int, error) {
 	novels, err := c.Repository.GetAllNovel()
 	if err != nil {
 		return nil, http.StatusInternalServerError, err

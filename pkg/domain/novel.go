@@ -16,11 +16,11 @@ type Novel struct {
 
 func NewNovel(novel *adapter.CreateNovelAdapter) (*Novel, error) {
 	if novel.Name == "" {
-		return nil, errors.New("Novel with blank name")
+		return nil, errors.New("novel with blank name")
 	}
 
 	if novel.Page < 0 {
-		return nil, errors.New("Novel with pages below 0")
+		return nil, errors.New("novel with pages below 0")
 	}
 
 	return &Novel{
@@ -33,11 +33,11 @@ func NewNovel(novel *adapter.CreateNovelAdapter) (*Novel, error) {
 
 func UpdateNovel(novel *adapter.UpdateNovelAdapter) (*Novel, error) {
 	if novel.Name == "" {
-		return nil, errors.New("Novel with blank name")
+		return nil, errors.New("novel with blank name")
 	}
 
 	if novel.Page < 0 {
-		return nil, errors.New("Novel with pages below 0")
+		return nil, errors.New("novel with pages below 0")
 	}
 
 	return &Novel{
