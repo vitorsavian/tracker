@@ -5,6 +5,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
+	"os"
+	"path/filepath"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -30,11 +33,23 @@ var migrateUpCmd = &cobra.Command{
 	Use: "up",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("migrate up called")
-		m, _ := migrate.New(
-			"github://mattes:personal-access-token@mattes/migrate_test",
+
+		origin, err := os.Getwd()
+		if err != nil {
+			logrus.Fatalf("Error encountered while getting main directory: %v", err)
+		}
+
+		m, err := migrate.New(
+			fmt.Sprintf("%s%s", "file://", filepath.Join(origin, "internal", "database", "migrations")),
 			"postgres://localhost:5432/database?sslmode=enable")
 
-		m.Steps(2)
+		if err != nil {
+			logrus.Fatal(err)
+		}
+
+		if err := m.Up(); err != nil {
+			logrus.Fatal(err)
+		}
 
 	},
 }
@@ -43,11 +58,30 @@ var migrateDownCmd = &cobra.Command{
 	Use: "down",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("migrate down called")
+
+		origin, err := os.Getwd()
+		if err != nil {
+			logrus.Fatalf("Error encountered while getting main directory: %v", err)
+		}
+
+		m, err := migrate.New(
+			fmt.Sprintf("%s%s", "file://", filepath.Join(origin, "internal", "database", "migrations")),
+			"postgres://localhost:5432/database?sslmode=enable")
+		if err != nil {
+			logrus.Fatal(err)
+		}
+
+		if err := m.Down(); err != nil {
+			logrus.Fatal(err)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(migrateCmd)
+
+	migrateCmd.AddCommand(migrateUpCmd)
+	migrateCmd.AddCommand(migrateDownCmd)
 
 	// Here you will define your flags and configuration settings.
 

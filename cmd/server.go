@@ -4,9 +4,8 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/vitorsavian/tracker/pkg/controller"
 )
 
 // serverCmd represents the server command
@@ -14,7 +13,7 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "API Rest",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("server called")
+		restConntroller := controller.GetRestControllerInstance()
 	},
 }
 
