@@ -4,9 +4,10 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"net/http"
+
 	"github.com/spf13/cobra"
 	"github.com/vitorsavian/tracker/pkg/controller/rest"
-	"net/http"
 )
 
 // serverCmd represents the server command
@@ -16,7 +17,10 @@ var serverCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		controller := rest.GetControllerInstance()
 
-		http.HandleFunc()
+		http.HandleFunc("/stuff", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("Hello, World!"))
+		})
 	},
 }
 
