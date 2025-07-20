@@ -2,12 +2,13 @@ package usecase
 
 import (
 	"fmt"
+	"net/http"
+	"sync"
+
 	"github.com/sirupsen/logrus"
 	"github.com/vitorsavian/tracker/pkg/adapter"
 	"github.com/vitorsavian/tracker/pkg/domain"
 	"github.com/vitorsavian/tracker/pkg/repository"
-	"net/http"
-	"sync"
 )
 
 type Novel struct {
@@ -77,7 +78,7 @@ func (c *Novel) UpdateNovel(adapter *adapter.UpdateNovelAdapter) (*domain.Novel,
 		return nil, http.StatusInternalServerError, err
 	}
 
-	return novel, http.StatusOK, nil
+	return novel, http.StatusNoContent, nil
 }
 
 func (c *Novel) GetNovel(id string) (*domain.Novel, int, error) {

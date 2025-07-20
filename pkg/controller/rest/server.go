@@ -1,12 +1,19 @@
 package rest
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 
+	"github.com/vitorsavian/tracker/pkg/adapter"
 	"github.com/vitorsavian/tracker/pkg/usecase"
 
 	"github.com/sirupsen/logrus"
@@ -28,7 +35,7 @@ func GetControllerInstance() *Controller {
 		if ControllerInstance == nil {
 			novelInstance, err := usecase.GetNovelInstance()
 			if err != nil {
-				logrus.Errorf("Unable to create repository: %v\n", err)
+				logrus.Errorf("Unable to novel instance: %v\n", err)
 				return nil
 			}
 
@@ -90,33 +97,173 @@ func (c *Controller) Start() {
 	logrus.Infoln("Server exited gracefully")
 }
 
+func setErrorResponse(w http.ResponseWriter, status int, err error) {
+	if errResp := json.NewEncoder(w).Encode(adapter.Response{
+		Status:  status,
+		Message: err.Error(),
+	}); errResp != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		logrus.Errorf("Error encoding error response: %v", errResp)
+	}
+}
+
 func (c *Controller) NovelEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		c.GetNovel(w, r)
+		id := r.URL.Query().Get("id")
+		if id == "" {
+			c.GetNovel(w, r)
+			return
+		}
+		c.GetAllNovel(w, r)
+		return
 	case http.MethodPost:
 		c.CreateNovel(w, r)
+		return
 	case http.MethodPut:
 		c.UpdateNovel(w, r)
+		return
 	case http.MethodDelete:
 		c.DeleteNovel(w, r)
+		return
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
 func (c *Controller) GetNovel(w http.ResponseWriter, r *http.Request) {
-	// Implement the logic to get a novel
+	logrus.Infoln("GetNovel called")
+	w.Header().Set("Content-Type", "application/json")
+
+	novel, status, err := c.Novel.GetNovel(r.URL.Query().Get("id"))
+	if err != nil {
+		logrus.Errorf("Error getting novel: %v", err)
+		setErrorResponse(w, status, err)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(novel); err != nil {
+		logrus.Errorf("Error encoding novel: %v", err)
+		setErrorResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	w.WriteHeader(status)
+}
+
+func (c *Controller) GetAllNovel(w http.ResponseWriter, r *http.Request) {
+	logrus.Infoln("GetAllNovel called")
+	w.Header().Set("Content-Type", "application/json")
+
+	novels, status, err := c.Novel.GetAllNovel()
+	if err != nil {
+		logrus.Errorf("Error getting all novels: %v", err)
+		setErrorResponse(w, status, err)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(novels); err != nil {
+		logrus.Errorf("Error encoding novels: %v", err)
+		setErrorResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	w.WriteHeader(status)
 }
 
 func (c *Controller) CreateNovel(w http.ResponseWriter, r *http.Request) {
-	// Implement the logic to create a novel
+	logrus.Infoln("CreateNovel called")
+	w.Header().Set("Content-Type", "application/json")
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		logrus.Errorf("Error reading request body: %v", err)
+		setErrorResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	defer r.Body.Close()
+	data := &adapter.CreateNovelAdapter{}
+
+	if err := json.Unmarshal(body, data); err != nil {
+		logrus.Errorf("Error unmarshalling request body: %v", err)
+		setErrorResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	novel, status, err := c.Novel.CreateNovel(data)
+	if err != nil {
+		logrus.Errorf("Error creating novel: %v", err)
+		setErrorResponse(w, status, err)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(novel); err != nil {
+		logrus.Errorf("Error encoding novel: %v", err)
+		setErrorResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	w.WriteHeader(status)
 }
 
 func (c *Controller) UpdateNovel(w http.ResponseWriter, r *http.Request) {
-	// Implement the logic to update a novel
+	logrus.Infoln("UpdateNovel called")
+	w.Header().Set("Content-Type", "application/json")
+
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		setErrorResponse(w, http.StatusBadRequest, errors.New(
+			"ID is required for updating a novel",
+		))
+		return
+	}
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		logrus.Errorf("Error reading request body: %v", err)
+		setErrorResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	defer r.Body.Close()
+	data := &adapter.UpdateNovelAdapter{}
+	if err := json.Unmarshal(body, data); err != nil {
+		logrus.Errorf("Error unmarshalling request body: %v", err)
+		setErrorResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	data.Id = id
+
+	_, status, err := c.Novel.UpdateNovel(data)
+	if err != nil {
+		logrus.Errorf("Error updating novel: %v", err)
+		setErrorResponse(w, status, err)
+		return
+	}
+
+	w.WriteHeader(status)
 }
 
 func (c *Controller) DeleteNovel(w http.ResponseWriter, r *http.Request) {
+	logrus.Infoln("DeleteNovel called")
+	w.Header().Set("Content-Type", "application/json")
 
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		setErrorResponse(w, http.StatusBadRequest, errors.New(
+			"ID is required for deleting a novel",
+		))
+		return
+	}
+
+	status, err := c.Novel.DeleteNovel(id)
+	if err != nil {
+		logrus.Errorf("Error deleting novel: %v", err)
+		setErrorResponse(w, status, err)
+		return
+	}
+
+	w.WriteHeader(status)
 }
