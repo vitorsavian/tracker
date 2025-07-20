@@ -2,12 +2,12 @@ package env
 
 import (
 	"github.com/joho/godotenv"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 func SetEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logrus.Errorln("Error loading .env file, using default environment variables")
 	}
 }
