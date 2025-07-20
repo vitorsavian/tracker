@@ -1,4 +1,4 @@
-name: Publish Docker image
+name: Release
 
 on:
   push:
@@ -36,3 +36,12 @@ jobs:
           context: .
           push: true
           tags: vitorsavian/tracker:latest
+  
+  # get_into_k3s:
+  #   name: Deploy to K3s
+  #   runs-on: ubuntu-latest
+  #   environment: Deploy
+  #   needs: build_and_push
+  #   steps:
+  #     - name: Check out the repo
+  #       uses: actions/checkout@v4
