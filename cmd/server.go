@@ -14,10 +14,9 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "API Rest",
 	Run: func(cmd *cobra.Command, args []string) {
-		controller := rest.GetControllerInstance()
-
 		env.SetEnv()
 
+		controller := rest.GetControllerInstance()
 		controller.Start()
 	},
 }

@@ -78,6 +78,7 @@ func (c *Controller) Start() {
 
 	// Start server in a goroutine
 	go func() {
+		logrus.Infof("Starting server on %s", server.Addr)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logrus.Fatalf("Server failed: %v", err)
 		}
@@ -108,14 +109,18 @@ func setErrorResponse(w http.ResponseWriter, status int, err error) {
 }
 
 func (c *Controller) NovelEndpoint(w http.ResponseWriter, r *http.Request) {
+	logrus.Infof("Method received: %s", r.Method) // ADICIONA ESSA LINHA
+	logrus.Infof("URL: %s", r.URL.String())
+	logrus.Infof("Headers: %+v", r.Header)
+
 	switch r.Method {
 	case http.MethodGet:
 		id := r.URL.Query().Get("id")
 		if id == "" {
-			c.GetNovel(w, r)
+			c.GetAllNovel(w, r)
 			return
 		}
-		c.GetAllNovel(w, r)
+		c.GetNovel(w, r)
 		return
 	case http.MethodPost:
 		c.CreateNovel(w, r)
@@ -142,13 +147,12 @@ func (c *Controller) GetNovel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(novel); err != nil {
 		logrus.Errorf("Error encoding novel: %v", err)
 		setErrorResponse(w, http.StatusInternalServerError, err)
 		return
 	}
-
-	w.WriteHeader(status)
 }
 
 func (c *Controller) GetAllNovel(w http.ResponseWriter, r *http.Request) {
@@ -162,13 +166,12 @@ func (c *Controller) GetAllNovel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(novels); err != nil {
 		logrus.Errorf("Error encoding novels: %v", err)
 		setErrorResponse(w, http.StatusInternalServerError, err)
 		return
 	}
-
-	w.WriteHeader(status)
 }
 
 func (c *Controller) CreateNovel(w http.ResponseWriter, r *http.Request) {
@@ -198,13 +201,12 @@ func (c *Controller) CreateNovel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(novel); err != nil {
 		logrus.Errorf("Error encoding novel: %v", err)
 		setErrorResponse(w, http.StatusInternalServerError, err)
 		return
 	}
-
-	w.WriteHeader(status)
 }
 
 func (c *Controller) UpdateNovel(w http.ResponseWriter, r *http.Request) {

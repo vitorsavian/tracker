@@ -22,6 +22,11 @@ func (p *PSQL) CreateConnection() error {
 		return err
 	}
 
+	if err := conn.Ping(context.Background()); err != nil {
+		logrus.Errorf("Unable to ping database: %v\n", err)
+		return err
+	}
+
 	p.conn = conn
 
 	return nil
