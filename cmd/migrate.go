@@ -5,10 +5,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"github.com/vitorsavian/tracker/pkg/infra/env"
 	"os"
 	"path/filepath"
+
+	"github.com/sirupsen/logrus"
+	"github.com/vitorsavian/tracker/internal/env"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
