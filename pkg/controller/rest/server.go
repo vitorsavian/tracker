@@ -53,7 +53,6 @@ func GetControllerInstance() *Controller {
 }
 
 func (c *Controller) Start() {
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/novel", c.NovelEndpoint)
 
@@ -109,7 +108,7 @@ func setErrorResponse(w http.ResponseWriter, status int, err error) {
 }
 
 func (c *Controller) NovelEndpoint(w http.ResponseWriter, r *http.Request) {
-	logrus.Infof("Method received: %s", r.Method) // ADICIONA ESSA LINHA
+	logrus.Infof("Method received: %s", r.Method)
 	logrus.Infof("URL: %s", r.URL.String())
 	logrus.Infof("Headers: %+v", r.Header)
 
