@@ -52,13 +52,24 @@ func GetControllerInstance() *Controller {
 	return ControllerInstance
 }
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Acess-Control-Allow-Origin", "*")
+		w.Header().Set("Acess-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+		w.Header().Set("Acess-Control-Allow-Headers", "Content-Type, Authorization")
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (c *Controller) Start() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/novel", c.NovelEndpoint)
+	handler := corsMiddleware(mux)
 
 	server := http.Server{
 		Addr:                         os.Getenv("SERVER_ADDR"),
-		Handler:                      mux,
+		Handler:                      handler,
 		DisableGeneralOptionsHandler: false,
 		TLSConfig:                    nil,
 		ReadTimeout:                  10 * time.Second,
